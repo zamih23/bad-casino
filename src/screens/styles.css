@@ -1,0 +1,6 @@
+.homeScreenContainer {
+    display: flex;
+    align-items: center;
+    height: 100vh;
+    background-color: #f3d4d8;
+}
