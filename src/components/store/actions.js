@@ -1,4 +1,6 @@
-import { ACTION_CHANGE_BALANCE, ACTION_CHANGE_HISTORY } from "../..";
+
+export const ACTION_CHANGE_BALANCE = "ACTION_CHANGE_BALANCE";
+export const ACTION_CHANGE_HISTORY = "ACTION_CHANGE_HISTORY";
 
 export const changeBalance = (value) => {
   return {

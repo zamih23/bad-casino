@@ -1,10 +1,11 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import PropTypes from "prop-types";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector, useStore } from "react-redux";
 import { changeBalance, changeHistory } from "../store/actions";
 import nextId from "react-id-generator";
+import { getRandomNumber, getFinalSlots } from "../../utils";
 
 const useStyles = makeStyles((theme) => ({
   footerButton: {
@@ -19,27 +20,18 @@ const useStyles = makeStyles((theme) => ({
 
 export const GameModal = (props) => {
   const balance = useSelector((state) => state.balance);
-  const history = useSelector((state) => state.history);
+  const store = useStore();
   const dispatch = useDispatch();
   const { closeModal } = props;
   const classes = useStyles();
-  const [slotNumbers, setSlotNumbers] = useState([7, 7, 7]);
+  const [slotNumbers, setSlotNumbers] = useState([7,7,7]);
   const [gameInProcces, setGameInProccess] = useState(false);
+  const [finalNumbers, setFinalNumbers] = useState()
   const id = nextId();
-
-  const addHistory = () => {
-    const date = new Date();
-    const time = date.getHours();
-    dispatch(changeHistory({ id: id, slots: slotNumbers, time: time }));
-  };
 
   const startPrice = useCallback((value) => {
     dispatch(changeBalance(value));
   }, []);
-
-  const getRandomNumber = () => {
-    return Math.floor(Math.random() * (9 - 1 + 1)) + 1;
-  };
 
   const checkGameResult = () => {
     if (
@@ -47,30 +39,33 @@ export const GameModal = (props) => {
       JSON.stringify(slotNumbers) === JSON.stringify([1, 2, 2])
     ) {
       dispatch(changeBalance(0.5));
+      console.log("+0.5");
     }
     if (JSON.stringify(slotNumbers) === JSON.stringify([7, 7, 7])) {
       dispatch(changeBalance(5));
+      console.log("+5");
     }
   };
 
-  const getCombination = () => {
-    // const timer = setInterval(() =>
-    //   setSlotNumbers(
-    //     [getRandomNumber(), getRandomNumber(), getRandomNumber()]
-    //   ),
-    //   100
-    // );
-    // setTimeout(() => {
-    //   setSlotNumbers(
-    //     [getRandomNumber(), getRandomNumber(), getRandomNumber()]
-    //   )
-    //   checkGameResult();
-    //   addHistory();
-    //   clearInterval(timer);
-    // }, 3000);
-    setSlotNumbers([getRandomNumber(), getRandomNumber(), getRandomNumber()]);
+  useEffect(()=>{
+    if(finalNumbers !== undefined && finalNumbers.length !== 0) {
     checkGameResult();
-    addHistory();
+    // setFinalNumbers(slotNumbers)
+    dispatch(changeHistory({ id: id, slots: slotNumbers, time: "time" }));
+    console.log(slotNumbers)
+    }
+  },[finalNumbers])
+
+  const getCombination = () => {
+    const timer = setInterval(
+      () =>
+        setSlotNumbers(getFinalSlots),
+      100
+    );
+     setTimeout(() => {
+      clearInterval(timer);
+       setFinalNumbers(slotNumbers);
+    }, 1000);
   };
 
   const handleClickRoll = () => {
@@ -79,31 +74,37 @@ export const GameModal = (props) => {
   };
 
   const handleClickTripleSeven = () => {
-    const timer = setInterval(() =>
-      setSlotNumbers(
-        [getRandomNumber(), getRandomNumber(), getRandomNumber()],
-        700
-      )
+    const timer = setInterval(
+      () =>
+        setSlotNumbers(getFinalSlots),
+      100
     );
-    setTimeout(() => {
+     setTimeout(() => {
       clearInterval(timer);
-      setSlotNumbers([7, 7, 7]);
-      checkGameResult();
+      setSlotNumbers([7,7,7])
+       setFinalNumbers(slotNumbers);
     }, 1000);
   };
 
   return (
     <div className="modalGameContainer">
-      {console.log(history)}
+      {console.log(store.getState())}
       <h2>Try Your Luck</h2>
       <div className="slotsContainer">
-        {slotNumbers.map((num) => {
+        {slotNumbers.length === 0 ? ([7,7,7].map((num) => {
           return (
             <div className="slotItem">
               <span>{num}</span>
             </div>
           );
-        })}
+        })):
+        (slotNumbers.map((num) => {
+          return (
+            <div className="slotItem">
+              <span>{num}</span>
+            </div>
+          );
+        }))}
       </div>
       {!gameInProcces && (
         <div className="footerButtonsContainer">
@@ -111,6 +112,7 @@ export const GameModal = (props) => {
             variant="contained"
             className={classes.footerButton}
             onClick={handleClickRoll}
+            disabled={balance === 0}
           >
             Roll
           </Button>
@@ -118,6 +120,7 @@ export const GameModal = (props) => {
             variant="contained"
             className={classes.footerButton}
             onClick={handleClickTripleSeven}
+            disabled={balance === 0}
           >
             777
           </Button>

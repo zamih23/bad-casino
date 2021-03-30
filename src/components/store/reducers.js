@@ -1,27 +1,19 @@
-import { ACTION_CHANGE_BALANCE, ACTION_CHANGE_HISTORY } from "../..";
+import { ACTION_CHANGE_BALANCE, ACTION_CHANGE_HISTORY } from "./actions";
 
-const initialState = {
-    balance: 10,
-    history: [],
-}
+export const balance = (state = 10, action) => {
+  switch (action.type) {
+    case ACTION_CHANGE_BALANCE:
+      return state + action.payload;
+    default:
+      return state;
+  }
+};
 
-const balanceChanging = (balance, change) => {
-  return ({
-    balance: balance + change
-  })
-}
-
-export const reducer = (state = initialState, action) => {
-  const {balance, history} = state;
-    switch (action.type) {
-      case ACTION_CHANGE_BALANCE:
-        return balanceChanging(balance, action.payload)
-      case ACTION_CHANGE_HISTORY:
-        return {
-          ...state,
-          history: [history, action.payload]
-        }
-          default:
-            return state;
-        }
-}
+export const history = (state = [], action) => {
+  switch (action.type) {
+    case ACTION_CHANGE_HISTORY:
+      return [...state, action.payload]
+    default:
+      return state;
+  }
+};

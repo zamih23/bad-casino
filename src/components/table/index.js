@@ -139,7 +139,7 @@ export default function EnhancedTable() {
           >
             <EnhancedTableHead classes={classes} rowCount={rows.length} />
             <TableBody>
-              {rows
+              {history
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   const labelId = `enhanced-table-checkbox-${index}`;

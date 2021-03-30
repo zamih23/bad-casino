@@ -5,12 +5,9 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { createStore } from "redux";
 import { Provider } from "react-redux";
-import { reducer } from "./components/store/reducers";
+import { rootReducer } from "./components/store/index";
 
-export const ACTION_CHANGE_BALANCE = "ACTION_CHANGE_BALANCE";
-export const ACTION_CHANGE_HISTORY = "ACTION_CHANGE_HISTORY";
-
-const store = createStore(reducer);
+const store = createStore(rootReducer);
 
 ReactDOM.render(
   <React.StrictMode>
