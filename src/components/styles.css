@@ -6,3 +6,12 @@
     width: 45px;
     height: 45px;
 }
+
+.tableContainer {
+    min-height: 50px;
+    width: 500px;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    margin: 15px
+}

@@ -1,36 +1,35 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
-import { makeStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TablePagination from "@material-ui/core/TablePagination";
-import TableRow from "@material-ui/core/TableRow";
-import TableSortLabel from "@material-ui/core/TableSortLabel";
-import Paper from "@material-ui/core/Paper";
 import { useSelector } from "react-redux";
+import { makeStyles } from '@material-ui/core/styles'
+import { TableSortLabel, Table, TableHead, TableRow, TableCell, TableBody, Paper } from "@material-ui/core";
 
-function createData(id, slots, time) {
-  return { id, slots, time };
+
+
+function descendingComparator(a, b, orderBy) {
+  if (b[orderBy] < a[orderBy]) {
+    return -1;
+  }
+  if (b[orderBy] > a[orderBy]) {
+    return 1;
+  }
+  return 0;
 }
 
-const rows = [
-  createData(1, "-1-2-3-", 3.7),
-  createData(2, "-1-2-3-", 25.0),
-  createData(3, "-1-2-3-", 16.0),
-  createData(4, "-1-2-3-", 6.0),
-  createData(5, "-1-2-3-", 16.0),
-  createData(6, "-1-2-3-", 3.2),
-  createData(7, "-1-2-3-", 9.0),
-  createData(8, "-1-2-3-", 0.0),
-  createData(9, "-1-2-3-", 26.0),
-  createData(10, "-1-2-3-", 0.2),
-  createData(11, "-1-2-3-", 0),
-  createData(12, "-1-2-3-", 19.0),
-  createData(13, "-1-2-3-", 18.0),
-];
+function getComparator(order, orderBy) {
+  return order === 'desc'
+    ? (a, b) => descendingComparator(a, b, orderBy)
+    : (a, b) => -descendingComparator(a, b, orderBy);
+}
+
+function stableSort(array, comparator) {
+  const stabilizedThis = array.map((el, index) => [el, index]);
+  stabilizedThis.sort((a, b) => {
+    const order = comparator(a[0], b[0]);
+    if (order !== 0) return order;
+    return a[1] - b[1];
+  });
+  return stabilizedThis.map((el) => el[0]);
+}
 
 const headCells = [
   {
@@ -56,128 +55,70 @@ const headCells = [
   },
 ];
 
-function EnhancedTableHead(props) {
-  const { order, orderBy } = props;
+const useStyles = makeStyles({
+  table: {
+    width: "100%",
+  },
+});
 
-  return (
-    <TableHead>
+export default function EnhancedTable() {
+  const history = useSelector(state => state.history);
+  const classes = useStyles();
+    const [order, setOrder] = React.useState('asc');
+  const [orderBy, setOrderBy] = React.useState('ID');
+
+  
+  const handleRequestSort = (event, property) => {
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
+  };
+ 
+  const createSortHandler = (property) => (event) => {
+    handleRequestSort(event, property);
+  };
+
+  return(
+    <div className="tableContainer">
+    <Table className={classes.table} size="small" aria-label="a dense table">
+      <TableHead>
       <TableRow>
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
             align={"center"}
-            padding={headCell.disablePadding ? "none" : "default"}
           >
-            <TableSortLabel>
+            <TableSortLabel
+              active={true}
+              direction={orderBy === headCell.id ? order : 'asc'}
+              onClick={createSortHandler(headCell.id)}
+            >
               {headCell.label}
-              {orderBy === headCell.id ? (
-                <span>
-                  {order === "desc" ? "sorted descending" : "sorted ascending"}
-                </span>
-              ) : null}
             </TableSortLabel>
           </TableCell>
         ))}
       </TableRow>
-    </TableHead>
-  );
-}
+      </TableHead>
+      <TableBody>
+        {history.length === 0 ? 
+        (<TableRow>
+          <TableCell align="center">Empty</TableCell>
+          <TableCell align="center">Empty</TableCell>
+          <TableCell align="center">Empty</TableCell>
+        </TableRow>) :
+        (stableSort(history, getComparator(order, orderBy))
+        .map((row) => (
+          <TableRow key={row.id}>
+            <TableCell component="th" scope="row" align="center">
+              {row.id}
+            </TableCell>
+            <TableCell align="center">{row.slots}</TableCell>
+            <TableCell align="center">{row.time}</TableCell>
+          </TableRow>
+        )))}
+      </TableBody>
+    </Table>
+  </div>
 
-EnhancedTableHead.propTypes = {
-  order: PropTypes.oneOf(["asc", "desc"]).isRequired,
-  orderBy: PropTypes.string.isRequired,
-};
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    width: "100%",
-  },
-  paper: {
-    width: "70%",
-    marginBottom: theme.spacing(2),
-  },
-  table: {
-    minWidth: 100,
-  },
-  tableHeader: {
-    color: "black",
-  },
-}));
-
-export default function EnhancedTable() {
-  const classes = useStyles();
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const history = useSelector((state) => state.history)
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const emptyRows =
-    rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
-
-  return (
-    <div className={classes.root}>
-      <h3 className={classes.tableHeader}>Your Last Games</h3>
-      <Paper className={classes.paper}>
-        <TableContainer>
-          <Table
-            className={classes.table}
-            aria-labelledby="tableTitle"
-            size={"medium"}
-            aria-label="enhanced table"
-          >
-            <EnhancedTableHead classes={classes} rowCount={rows.length} />
-            <TableBody>
-              {history
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const labelId = `enhanced-table-checkbox-${index}`;
-
-                  return (
-                    <TableRow hover tabIndex={-1} key={row.id}>
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
-                        align="center"
-                      >
-                        {row.id}
-                      </TableCell>
-                      <TableCell align="center">{row.slots}</TableCell>
-                      <TableCell align="center">{row.time}</TableCell>
-                    </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
-      </Paper>
-    </div>
   );
 }

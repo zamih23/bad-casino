@@ -33,6 +33,7 @@ export const Body =() => {
         >
           <GameModal closeModal={handleGameModalClose} /> 
         </Modal>
+        <h2>Your Last Games</h2>
      <EnhancedTable />
      <Button variant="outlined" color="primary"className={classes.playButton} onClick={handleGameModalOpen}>Play</Button>
    </div>
