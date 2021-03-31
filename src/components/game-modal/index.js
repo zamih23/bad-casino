@@ -48,10 +48,11 @@ export const GameModal = (props) => {
   };
 
   useEffect(()=>{
+    const date = new Date();
     if(finalNumbers !== undefined && finalNumbers.length !== 0) {
     checkGameResult();
     // setFinalNumbers(slotNumbers)
-    dispatch(changeHistory({ id: id, slots: slotNumbers, time: "time" }));
+    dispatch(changeHistory({ id: id, slots: slotNumbers, time: date.toLocaleTimeString() }));
     console.log(slotNumbers)
     }
   },[finalNumbers])

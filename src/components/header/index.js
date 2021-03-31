@@ -4,6 +4,8 @@ import {
   IconButton,
   Typography,
   Menu,
+  Button,
+  TextField,
 } from "@material-ui/core";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import "../styles.css";
@@ -30,15 +32,26 @@ const useStyle = makeStyles((theme) => ({
     flex: 0.3,
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center"
+    alignItems: "center",
+  },
+  loginButton: {
+    color: "white",
+    fontSize: 15,
+  },
+  loginInput: {
+    width: "90%",
+    height: "75px",
   },
 }));
 
 export const Header = () => {
   const classes = useStyle();
   const balance = useSelector((state) => state.balance);
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [isLogin, setIsLogin] = useState(false);
+  const [username, setUsername] = useState("")
   const open = Boolean(anchorEl);
+  
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -46,6 +59,21 @@ export const Header = () => {
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
+    console.log(event.currentTarget)
+  };
+
+  const handleConfimLogin = () => {
+    setIsLogin(true);
+    handleClose()
+  }
+
+  const handleClickLogOut = () => {
+    setIsLogin(false);
+    handleClose()
+  }
+
+  const handleChange = (event) => {
+    setUsername(event.target.value);
   };
 
   return (
@@ -57,9 +85,15 @@ export const Header = () => {
             <Typography variant="h4" component="h2">
               $ {balance}
             </Typography>
-            <IconButton color="inherit" onClick={handleMenu}>
-              <AccountCircle />
-            </IconButton>
+            {isLogin ? (
+              <IconButton color="inherit" onClick={handleMenu}>
+                <AccountCircle />
+              </IconButton>
+            ) : (
+              <Button className={classes.loginButton} onClick={handleMenu}>
+                Login
+              </Button>
+            )}
           </div>
         </div>
         <Menu
@@ -77,13 +111,27 @@ export const Header = () => {
           open={open}
           onClose={handleClose}
         >
-          <div style={{ width: "200px", height: "75px" }}>
-            <span>Enter your name</span>
-          </div>
+          {isLogin ? (
+            <div className="loginWindow">
+              {console.log(username)}
+              <span>Hi, {username} </span>
+              <Button onClick={handleClickLogOut}>Log Out</Button>
+            </div>
+          ) : (
+          <div className="loginWindow">
+            <span>Hi guess, </span>
+            {console.log(username)}
+            <TextField
+              id="outlined-basic"
+              label="Enter your name"
+              variant="outlined"
+              onChange={handleChange}
+              className={classes.loginInput}
+            />
+            <Button onClick={handleConfimLogin}>Login</Button>
+          </div>)}
         </Menu>
       </Toolbar>
     </AppBar>
   );
 };
-
-
