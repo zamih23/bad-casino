@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import EnhancedTable from "../table";
+import {EnhancedTable} from "../table";
 import { Button, Modal } from '@material-ui/core';
 import { makeStyles } from "@material-ui/core/styles";
 import { GameModal } from '../game-modal';

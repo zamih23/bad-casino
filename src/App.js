@@ -1,9 +1,13 @@
-import './App.css';
-import { HomeScreen } from './screens';
+import "./App.css";
+import { Footer } from "./components/footer";
+import { HomeScreen } from "./screens";
 
 function App() {
   return (
-    <HomeScreen />
+    <div>
+      <HomeScreen />
+      <Footer />  
+    </div>
   );
 }
 
