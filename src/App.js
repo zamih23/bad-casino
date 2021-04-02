@@ -6,7 +6,7 @@ function App() {
   return (
     <div>
       <HomeScreen />
-      <Footer />  
+      <Footer />
     </div>
   );
 }

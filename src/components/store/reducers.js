@@ -12,7 +12,7 @@ export const balance = (state = 10, action) => {
 export const history = (state = [], action) => {
   switch (action.type) {
     case ACTION_CHANGE_HISTORY:
-      return [...state, action.payload]
+      return [...state, action.payload];
     default:
       return state;
   }

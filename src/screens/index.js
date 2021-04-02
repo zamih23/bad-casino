@@ -3,10 +3,10 @@ import { Body } from "../components/body";
 import "./styles.css";
 
 export const HomeScreen = () => {
-    return (
-        <div className="homeScreenContainer">
-            <Header /> 
-            <Body />
-        </div>
-    );
-}
+  return (
+    <div className="homeScreenContainer">
+      <Header />
+      <Body />
+    </div>
+  );
+};

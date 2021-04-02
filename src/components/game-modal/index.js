@@ -24,9 +24,8 @@ export const GameModal = (props) => {
   const dispatch = useDispatch();
   const { closeModal } = props;
   const classes = useStyles();
-  const [slotNumbers, setSlotNumbers] = useState([7,7,7]);
-  const [gameInProcces, setGameInProccess] = useState(false);
-  const [finalNumbers, setFinalNumbers] = useState()
+  const [slotNumbers, setSlotNumbers] = useState([7, 7, 7]);
+  const [finalNumbers, setFinalNumbers] = useState();
   const id = nextId();
 
   const startPrice = useCallback((value) => {
@@ -47,25 +46,25 @@ export const GameModal = (props) => {
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     const date = new Date();
-    if(finalNumbers !== undefined && finalNumbers.length !== 0) {
-    checkGameResult();
-    // setFinalNumbers(slotNumbers)
-    dispatch(changeHistory({ id: id, slots: slotNumbers, time: date.toLocaleTimeString() }));
-    console.log(slotNumbers)
+    if (finalNumbers !== undefined && finalNumbers.length !== 0) {
+      checkGameResult();
+      dispatch(
+        changeHistory({
+          id: id,
+          slots: slotNumbers,
+          time: date.toLocaleTimeString(),
+        })
+      );
     }
-  },[finalNumbers])
+  }, [finalNumbers]);
 
   const getCombination = () => {
-    const timer = setInterval(
-      () =>
-        setSlotNumbers(getFinalSlots),
-      100
-    );
-     setTimeout(() => {
+    const timer = setInterval(() => setSlotNumbers(getFinalSlots), 100);
+    setTimeout(() => {
       clearInterval(timer);
-       setFinalNumbers(slotNumbers);
+      setFinalNumbers(slotNumbers);
     }, 1000);
   };
 
@@ -75,65 +74,59 @@ export const GameModal = (props) => {
   };
 
   const handleClickTripleSeven = () => {
-    const timer = setInterval(
-      () =>
-        setSlotNumbers(getFinalSlots),
-      100
-    );
-     setTimeout(() => {
+    const timer = setInterval(() => setSlotNumbers(getFinalSlots), 100);
+    setTimeout(() => {
       clearInterval(timer);
-      setSlotNumbers([7,7,7])
-       setFinalNumbers(slotNumbers);
+      setSlotNumbers([7, 7, 7]);
+      setFinalNumbers(slotNumbers);
     }, 1000);
   };
 
   return (
     <div className="modalGameContainer">
-      {console.log(store.getState())}
       <h2>Try Your Luck</h2>
       <div className="slotsContainer">
-        {slotNumbers.length === 0 ? ([7,7,7].map((num) => {
-          return (
-            <div className="slotItem">
-              <span>{num}</span>
-            </div>
-          );
-        })):
-        (slotNumbers.map((num) => {
-          return (
-            <div className="slotItem">
-              <span>{num}</span>
-            </div>
-          );
-        }))}
+        {slotNumbers.length === 0
+          ? [7, 7, 7].map((num) => {
+              return (
+                <div className="slotItem">
+                  <span>{num}</span>
+                </div>
+              );
+            })
+          : slotNumbers.map((num) => {
+              return (
+                <div className="slotItem">
+                  <span>{num}</span>
+                </div>
+              );
+            })}
       </div>
-      {!gameInProcces && (
-        <div className="footerButtonsContainer">
-          <Button
-            variant="contained"
-            className={classes.footerButton}
-            onClick={handleClickRoll}
-            disabled={balance === 0}
-          >
-            Roll
-          </Button>
-          <Button
-            variant="contained"
-            className={classes.footerButton}
-            onClick={handleClickTripleSeven}
-            disabled={balance === 0}
-          >
-            777
-          </Button>
-          <Button
-            variant="contained"
-            className={classes.footerButton}
-            onClick={closeModal}
-          >
-            Quit
-          </Button>
-        </div>
-      )}
+      <div className="footerButtonsContainer">
+        <Button
+          variant="contained"
+          className={classes.footerButton}
+          onClick={handleClickRoll}
+          disabled={balance === 0}
+        >
+          Roll
+        </Button>
+        <Button
+          variant="contained"
+          className={classes.footerButton}
+          onClick={handleClickTripleSeven}
+          disabled={balance === 0}
+        >
+          777
+        </Button>
+        <Button
+          variant="contained"
+          className={classes.footerButton}
+          onClick={closeModal}
+        >
+          Quit
+        </Button>
+      </div>
     </div>
   );
 };

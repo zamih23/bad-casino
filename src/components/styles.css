@@ -1,25 +1,25 @@
 .headerContainer {
-    color:#fb7042;
+  color: #fb7042;
 }
 
 .logo {
-    width: 45px;
-    height: 45px;
+  width: 45px;
+  height: 45px;
 }
 
 .tableContainer {
-    height: 500px;
-    width: 602px;
-    background-color: white;
-    justify-content: center;
-    margin: 15px
+  height: 500px;
+  width: 602px;
+  background-color: white;
+  justify-content: center;
+  margin: 15px;
 }
 
 .loginWindow {
-    width: 250;
-    height: 150px;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    flex-direction: column;
+  width: 250;
+  height: 150px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: column;
 }

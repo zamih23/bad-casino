@@ -1,4 +1,4 @@
-import {balance, history} from "./reducers";
-import { combineReducers } from 'redux';
+import { balance, history } from "./reducers";
+import { combineReducers } from "redux";
 
-export const rootReducer = combineReducers({balance, history})
+export const rootReducer = combineReducers({ balance, history });

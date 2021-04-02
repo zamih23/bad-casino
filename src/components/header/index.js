@@ -49,9 +49,8 @@ export const Header = () => {
   const balance = useSelector((state) => state.balance);
   const [anchorEl, setAnchorEl] = useState(null);
   const [isLogin, setIsLogin] = useState(false);
-  const [username, setUsername] = useState("")
+  const [username, setUsername] = useState("");
   const open = Boolean(anchorEl);
-  
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -59,18 +58,18 @@ export const Header = () => {
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
-    console.log(event.currentTarget)
+    console.log(event.currentTarget);
   };
 
   const handleConfimLogin = () => {
     setIsLogin(true);
-    handleClose()
-  }
+    handleClose();
+  };
 
   const handleClickLogOut = () => {
     setIsLogin(false);
-    handleClose()
-  }
+    handleClose();
+  };
 
   const handleChange = (event) => {
     setUsername(event.target.value);
@@ -118,18 +117,19 @@ export const Header = () => {
               <Button onClick={handleClickLogOut}>Log Out</Button>
             </div>
           ) : (
-          <div className="loginWindow">
-            <span>Hi guess, </span>
-            {console.log(username)}
-            <TextField
-              id="outlined-basic"
-              label="Enter your name"
-              variant="outlined"
-              onChange={handleChange}
-              className={classes.loginInput}
-            />
-            <Button onClick={handleConfimLogin}>Login</Button>
-          </div>)}
+            <div className="loginWindow">
+              <span>Hi guess, </span>
+              {console.log(username)}
+              <TextField
+                id="outlined-basic"
+                label="Enter your name"
+                variant="outlined"
+                onChange={handleChange}
+                className={classes.loginInput}
+              />
+              <Button onClick={handleConfimLogin}>Login</Button>
+            </div>
+          )}
         </Menu>
       </Toolbar>
     </AppBar>
